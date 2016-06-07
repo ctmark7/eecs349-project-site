@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EECS 349: Divvy Bike Predictor</title>
+    
+    <!-- Bootstrap -->
+    <link href="bootstrap-3.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="bootstrap-3.3.6/dist/js/bootstrap.min.js"></script>
+
+    <!-- Custom CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="script.js"></script>
+
+  </head>
+  <!-- Navbar -->
+  <body id="homePage" data-spy="scroll" data-target=".navbar" data-offset="60">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>  
+                <span class="icon-bar"></span> 
+            </button>
+            <a class="navbar-brand" id="home" href="index.html">Divvy Predictor</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+              <li><a href="index.html#intro">Introduction</a></li>
+              <li><a href="index.html#results">Results</a></li> 
+              <li><a href="index.html#data">Data</a></li> 
+              <li><a href="index.html#conclusion">Conclusion</a></li> 
+              <li><a href="index.html#FAQ">Report</a></li> 
+            </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- body -->
+    <div id="report-intro">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>EECS 349: Divvy Bike Sharing Rental Predictor</h2>
+              <h5>Mark Giangreco</h5>
+              <h5>Christopher Mark</h5>
+              <h5>Jon Rovira</h5>
+              <br>
+              <h3>Introduction<br></h3>
+              <p><a href="https://www.divvybikes.com/">Divvy</a>, a project of the Chicago Department of Transportation, is Chicago’s bike share system. With the swipe of a credit card, residents and tourists can rent a bike from one of hundreds of stations located across the city. For Divvy, accurately forecasting demand is critical to capacity sizing decisions such as when and where to build new stations and how to set staffing schedules, which would benefit commuters and travelers throughout the city of Chicago.
+              </p>
+              <p>Our task was to predict the total number of rentals at every Divvy station for four daylight time blocks: 6-9AM, 9AM-noon, noon-3PM, and 3-6PM. </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- DATA -->
+      <div id="report-data">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Data</h3>
+              <p>Divvy has published comprehensive <a href="https://www.divvybikes.com/data">trip and station data</a> spanning about 2.5 years, from mid-2013 to the end of 2015. We binned this trip-by-trip data into four standard 3-hour time intervals and merged it with the station data and with weather readings from Weather Underground, as well as with calendar information such as the day of week and Federal holidays. We trained our model on a randomly selected subset of 70% of the data, tested on the remaining 30%, and verified our results using five-fold cross-validation.</p>
+
+            <p> Our final dataset consisted of 1,219,937 rows of Divvy station data joined by date with Weather Underground weather data. See our general report for sources to the dataset and merging scripts used.
+                <!--- Our final dataset for model training and validation:
+                Full (1,219,937 x 37, 294MB) : https://www.dropbox.com/s/6agikx0h8a65gpp/divvy_rentals.csv?dl=0
+                Excerpt (99 x 37, 15KB): https://www.dropbox.com/s/1hm9rl2lpxv0opd/divvy_rentals_excerpt.csv?dl=0
+
+                Scripts for generating the dataset and modeling:
+                https://github.com/mgiangreco/divvy-->
+            <br>
+            <h4>Features:</h4>
+              <table border='1'>
+                <tr>
+                  <th>Feature</th> <th>Description</th>
+                </tr>
+                <tr>
+                  <th>Response Variable</th> <th></th>
+                </tr>
+                <tr>
+                  <td>trip_count</td> <td>the number of outbound trips from a given station for a given three-hour time period</td>
+                </tr>
+                <tr>
+                  <th>Predictor Variables</th> <th></th>
+                </tr>
+                <tr>
+                  <td>precipi</td> <td>average precipitation, in inches</td>
+                </tr>
+                <tr>
+                  <td>pressurei</td> <td>average air pressure, in psi</td>
+                </tr>
+                <tr>
+                  <td>hum</td> <td>average relative humidity</td>
+                </tr>
+                <tr>
+                  <td>tempi </td> <td>average temperature, in degrees Fahrenheit</td>
+                </tr>
+                <tr>
+                  <td>dewpti </td> <td>average dewpoint, in degrees Fahrenheit</td>
+                </tr>
+                <tr>
+                  <td>visi </td> <td>average visibility</td>
+                </tr>
+                <tr>
+                  <td>wspdi</td> <td>average windspeed, in mph</td>
+                </tr>
+                <tr>
+                  <td>station_id</td> <td>Divvy station ID</td>
+                </tr>
+                <tr>
+                  <td>latitude </td> <td>latitude of the station</td>
+                </tr>
+                <tr>
+                  <td>longitude</td> <td>longitude of the station</td>
+                </tr>
+                <tr>
+                  <td>hour_6*</td> <td>6-9am time period</td>
+                </tr>
+                <tr>
+                  <td>hour_9*</td> <td>9am-noon time period</td>
+                </tr>
+                <tr>
+                  <td>hour_12*</td> <td>noon-3pm time period</td>
+                </tr>
+                <tr>
+                  <td>hour_15*</td> <td>3-6pm time period</td>
+                </tr>
+                <tr>
+                  <td>day_x (0-6)*</td> <td>Monday - Sunday</td>
+                </tr>
+                <tr>
+                  <td>weekend_day*</td> <td>Saturday or Sunday</td>
+                </tr>
+                <tr>
+                  <td>holiday*</td> <td>U.S. Federal holiday</td>
+                </tr>
+                <tr>
+                  <td>month_x (1-12)*</td> <td>January - December</td>
+                </tr>
+                <tr>
+                  <td>days_since_first_date </td> <td>number of days since the first date in the dataset (to help the model account for increases in total ridership over time)</td>
+                </tr>
+              </table>            
+              <i>*dummy variable</i>
+
+            <br>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+<!-- ANALYSIS -->
+    <div id="report-analysis">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Analysis<br></h3>
+              <p>Demand is concentrated at stations near the lakefront and downtown Loop area. On weekends, demand moves even farther east as compared to weekdays.</p>
+              <div id="tableau-data" class="center-block" style="display:block;margin-left: auto;margin-right: auto"> 
+                <script type='text/javascript' src='https://public.tableau.com/javascripts/api/viz_v1.js'></script><div class='tableauPlaceholder' style='width: 654px; height: 742px;'><noscript><a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Di&#47;DivvyRentals&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz' width='654' height='742' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='path' value='views&#47;DivvyRentals&#47;Dashboard1?:embed=y&amp;:display_count=y&amp;:showTabs=y' /> <param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Di&#47;DivvyRentals&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='showTabs' value='y' /></object></div>
+              </div>
+              <br>
+              <p>If we look at average rentals across all stations over time, we get a clear picture of realized demand. Although the average number of rentals across all stations is 3.8 rentals (for all three-hour periods from 6am-6pm), demand is volatile, with a standard deviation of 8.1 across all stations. It is also highly seasonal, peaking around August and hitting a low around January. There is also a clear year-over-year increase, especially from 2013 to 2014--we account for this in our model through the “days_since_first_date” variable.</p>
+              <div id="rentals-over-time" class="center-block">
+              <b>image caption</b>
+              <img class="center-block" src="images/rentals-over-time.jpg" alt="Rentals Over Time" height="50%" width="50%">
+            </div>
+            <br>
+
+            <p>Given this seasonality, one might guess that temperature would have a big impact on ridership--and indeed, this is the case. The heaviest periods for rentals coincide with temperatures around 90 degrees Fahrenheit. Conversely, we can see that precipitation has a depressing effect on rentals. </p>
+            <br>
+            <img class="center-block" src="images/rentals-by-weather.jpg" alt="Rentals by Weather" height="50%" width="50%">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div id="report-results">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h3>The Model<br></h3>
+              <p>Our final model is a random forest of 500 trees and a minimum of 25 samples per leaf node to combat overfitting, trained via bootstrap sampling (L. Brieman, “Random Forests,” Machine Learning, 45(1), 5-32, 2001). This algorithm is fairly robust to noise and, perhaps more importantly, does well at picking up interactions between predictor variables. The importance of the latter point is easy to grasp intuitively, since one can imagine that rentals at a station near the lakefront on a warm weekend day in August will be higher than the individual predictors would suggest independently of one another.</p>
+              <p>Our model is overall fairly accurate, with a mean absolute error of ~1.8 rentals per three-hour period and a mean-squared error of ~13.5. It is important to note, however, that these are average errors, and the model may be less accurate during periods of particularly high demand and/or when weather forecasts do not match actual weather patterns. We trained the model on a randomly selected subset of 70% of the data, tested on the remaining 30%, and verified our results using five-fold cross-validation. The r-squared is ~0.80, meaning that the model explains about 80% of the variation in rentals. </p>
+
+            <p>Weather variables proved to be the most important features determining rentals, especially temperature and precipitation. Station location, the day of week, and the time of day also factor into the model, but to a lesser extent than weather. </p>
+            <img class="center-block" src="images/feature_importance.jpg" alt="Feature Importance" height="50%" width="50%">
+            <br>
+              <p>In addition to the random forest, we also attempted a simple OLS regression and a gradient boosting machine (J. Friedman, Greedy Function Approximation: A Gradient Boosting Machine, The Annals of Statistics, Vol. 29, No. 5, 2001). The linear regression performed relatively poorly, with a mean-absolute error of ~3.7 rentals, a mean-squared error of ~53.9, and an r-squared of ~0.18. The GBM (boosting stages: 1000, learning rate: 0.01, maximum depth: 6, minimum samples per leaf node: 25) performed slightly worse than the random forest but better than the OLS regression, with a mean-absolute error of ~2.2, a mean-squared error of ~20.2, and an r-squared of 0.70.</p>
+              <br>
+              <table border='1'>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Mean-absolute error</th>
+                  <th>Mean-squared error</th>
+                  <th>R-squared</th>
+                </tr>
+                <tr>
+                  <th>Random Forest</th>
+                  <td>1.75</td>
+                  <td>13.54</td>
+                  <td>0.80</td>
+                </tr>
+                <tr>
+                  <th>Gradient Boosting Machine</th>
+                  <td>2.21</td>
+                  <td>20.15</td>
+                  <td>0.70</td>
+                </tr>
+                <tr>
+                  <th>OLS Regression</th>
+                  <td>3.72</td>
+                  <td>53.90</td>
+                  <td>0.18</td>
+                </tr>
+              </table>
+              <br>
+              <br>
+
+              <p>In order to better understand the accuracy of our model, let’s take a look at predictions for a typical station in the month of July. Station 5 is a busy station located at the intersection of S. State and W. Harrison Sts., just west of Buckingham Fountain and the Magnificent Mile. We can see that in 2015, average rentals for a three-hour period ranged from a daily low of about 3 to a daily high around 12. Our model does a reasonable job of minimizing overall error, but fails to capture much of the volatility. Still, it is off by more than 3 rentals on only a few days of the month.</p>
+
+              <img class="center-block" src="images/rental-forecasts.jpg" alt="Rental Forecast" height="50%" width="50%">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONCLUSION -->
+      <div id="report-conclusion">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Conclusion</h3>
+                <p>Our main conclusions were as follows:</p>
+                <ul>
+                  <li>It is possible to predict rentals with reasonable accuracy with the information provided by Divvy, combined with weather and calendar data.</li>
+                  <li>Weather is the most important factor that determines rentals, especially precipitation and air pressure (low air pressure is generally associated with cloudy, rainy, or snowy weather).</li>
+                  <li>Station location, the day of week, time of day, and whether or not the day is a holiday also factor in, but to a lesser extent than weather.</li>
+                  <li>High-demand summer months see the highest volatility in demand, which makes them the most difficult months in which to make accurate predictions.</li>
+                </ul>
+              <h3>Further Applications</h3>
+                <p>One key missing feature of this data is the number of bikes available for rental at a station at a given time. This cannot be calculated simply from the number of outgoing and incoming rentals, because Divvy has vans that transport bikes from station to station throughout the day. Divvy provides “available docks” information on its website for stations in real-time, but not for the historical data. With this additional field, it would be possible to determine when stations experienced stock outs in the past, and use that to estimate the actual demand for bikes.</p>
+                <p>Knowing the actual demand (or at least a good estimate of it) would allow Divvy to calculate its capacity shortfall and the corresponding amount of revenue it is foregoing at its current capacity due to stockouts. Divvy could then weigh that lost revenue against the cost of adding capacity (whether through new stations or through increased staffing) to determine the optimal service level across all stations (J.A. Van Mieghem and G. Allon, “Safety Capacity and Inventory”, Operations Strategy, Second Edition, 493-498).</p>
+                <br><br>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- FOOTER -->
+    <footer>
+    <div id="footer">
+      <div class="container footer-custom">
+      <p class="pull-right"><a href="#homePage">Back to top</a></p>
+      <p>&copy; Mark Giangreco, Chris Mark, Jon Rovira 2016</p>
+    </div>
+    </footer>
+</body>
+</html>
+	

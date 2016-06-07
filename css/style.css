@@ -1,0 +1,63 @@
+
+.jumbotron { 
+    background-color:  #B3DDF2; /*  light blue */
+    color: #ffffff;
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+
+.navbar {
+    background-color: #3db7e4;  /*  chicago blue */
+    margin-bottom: 0px;
+    border-radius: 0px;
+}
+
+#myNavbar a, #home{
+    color: #ffffff;
+}
+
+#myNavbar a:hover{
+    color: #B3DDF2;
+}
+
+#button{
+    background-color: #3db7e4; 
+    border: none;
+}
+#button:hover{
+    background-color: #B3DDF2;
+}
+#button:focus{ /*fixes blue outline when clicking button homebutton */
+    outline:none;
+}
+
+#report-intro{
+    padding-top: 50px
+}
+#intro, #results, #data, #conclusion, #report{
+    padding-top: 30px;
+}
+
+#results, #conclusion{
+    background-color: #EEF9FD;
+}
+
+#footer{
+    background-color:#3db7e4;
+}
+
+#contactus{
+    padding: 10px 0 10px 0;
+}
+#footer{
+    color:#ffffff;
+    padding: 15px;
+}
+
+#footer a{
+    color:#ffffff;
+}
+
+td, th{
+    padding-right: 10px;
+    padding-left: 10px;

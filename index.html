@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EECS 349: Divvy Bike Predictor</title>
+    
+    <!-- Bootstrap -->
+    <link href="bootstrap-3.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="bootstrap-3.3.6/dist/js/bootstrap.min.js"></script>
+
+    <!-- Custom CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="script.js"></script>
+
+  </head>
+  <!-- Navbar -->
+  <body id="homePage" data-spy="scroll" data-target=".navbar" data-offset="60">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>  
+                <span class="icon-bar"></span> 
+            </button>
+            <a class="navbar-brand" id="home" href="index.html">Divvy Predictor</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+              <li><a href="index.html#intro">Introduction</a></li>
+              <li><a href="index.html#results">Results</a></li> 
+              <li><a href="index.html#data">Data</a></li> 
+              <li><a href="index.html#conclusion">Conclusion</a></li> 
+              <li><a href="report.html">Report</a></li> 
+            </ul>
+        </div>
+      </div>
+    </nav>
+	
+    <!-- Container (Jumbotron) --> 
+    <div class="container-fluid text-center">
+        <div class="row">
+            <div class="jumbotron">
+                <h2> Divvy Bike Sharing Rental Predictor</h2>
+                <h4>EECS 349 | Spring 2016 | Northwestern University</h4>
+                <h5>Mark Giangreco - mgiangreco at gmail</h5>
+                <h5>Christopher Mark - cmark1017 at gmail</h5>
+                <h5>Jon Rovira - jonrovira at gmail</h5> 
+            </div>
+        </div>
+    </div>
+
+<!-- INTRO -->
+    <div id="intro">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h1>Introduction<br></h1>
+              <p><a href="https://www.divvybikes.com/">Divvy</a>, a project of the Chicago Department of Transportation, is Chicago’s bike share system. With the swipe of a credit card, residents and tourists can rent a bike from one of hundreds of stations located across the city. For Divvy, accurately forecasting demand is critical to capacity sizing decisions such as when and where to build new stations and how to set staffing schedules, which would benefit commuters and travelers throughout the city of Chicago.
+              </p>
+              <p>Our task was to predict the total number of rentals at every Divvy station for four daylight time blocks: 6-9AM, 9AM-noon, noon-3PM, and 3-6PM. </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <br>
+
+
+      <!-- RESULTS -->
+      <div id="results">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h1>Results<br></h1>
+              <p>Our final model is a random forest of 500 trees and a minimum of 25 samples per leaf node to combat overfitting, trained via bootstrap sampling (L. Brieman, “Random Forests,” Machine Learning, 45(1), 5-32, 2001). This algorithm is fairly robust to noise and, perhaps more importantly, does well at picking up interactions between predictor variables. The importance of the latter point is easy to grasp intuitively, since one can imagine that rentals at a station near the lakefront on a warm weekend day in August will be higher than the individual predictors would suggest independently of one another.</p>
+              <p>Our model is overall fairly accurate, with a mean absolute error of ~1.8 rentals per three-hour period and a mean-squared error of ~13.5. It is important to note, however, that these are average errors, and the model may be less accurate during periods of particularly high demand and/or when weather forecasts do not match actual weather patterns. We trained the model on a randomly selected subset of 70% of the data, tested on the remaining 30%, and verified our results using five-fold cross-validation. The r-squared is ~0.80, meaning that the model explains about 80% of the variation in rentals. </p>
+              <p>In addition to the random forest, we also attempted a simple OLS regression and a gradient boosting machine.</p>
+              <table border='1'>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Mean-absolute error</th>
+                  <th>Mean-squared error</th>
+                  <th>R-squared</th>
+                </tr>
+                <tr>
+                  <th>Random Forest</th>
+                  <td>1.75</td>
+                  <td>13.54</td>
+                  <td>0.80</td>
+                </tr>
+                <tr>
+                  <th>Gradient Boosting Machine</th>
+                  <td>2.21</td>
+                  <td>20.15</td>
+                  <td>0.70</td>
+                </tr>
+                <tr>
+                  <th>OLS Regression</th>
+                  <td>3.72</td>
+                  <td>53.90</td>
+                  <td>0.18</td>
+                </tr>
+              </table>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA -->
+      <div id="data">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h1>Data</h1>
+              <p>Divvy has published comprehensive <a href="https://www.divvybikes.com/data">trip and station data</a> spanning about 2.5 years, from mid-2013 to the end of 2015. We binned this trip-by-trip data into four standard 3-hour time intervals and merged it with the station data and with weather readings from Weather Underground, as well as with calendar information such as the day of week and Federal holidays. We trained our model on a randomly selected subset of 70% of the data, tested on the remaining 30%, and verified our results using five-fold cross-validation.</p>
+
+            <div>Links to our final data set used for modeling + training and scripts used to generate them: <br>
+              <a href="https://www.dropbox.com/s/6agikx0h8a65gpp/divvy_rentals.csv?dl=0" target="_blank"><button type="button" class="btn btn-primary" id="button">Full Data (249MB)</button></a>
+              <a href="https://www.dropbox.com/s/1hm9rl2lpxv0opd/divvy_rentals_excerpt.csv?dl=0" target="_blank"><button type="button" class="btn btn-primary" id="button">Data Excerpt (15KB)</button></a>
+              <a href="https://github.com/mgiangreco/divvy" target="_blank"><button type="button" class="btn btn-primary" id="button">Scripts</button></a>
+                <!--- Our final dataset for model training and validation:
+                Full (1,219,937 x 37, 294MB) : https://www.dropbox.com/s/6agikx0h8a65gpp/divvy_rentals.csv?dl=0
+                Excerpt (99 x 37, 15KB): https://www.dropbox.com/s/1hm9rl2lpxv0opd/divvy_rentals_excerpt.csv?dl=0
+
+                Scripts for generating the dataset and modeling:
+                https://github.com/mgiangreco/divvy-->
+            </div>
+            <br>
+				    <h4>Features:</h4>
+              <table border='1'>
+                <tr>
+                  <th>Feature</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <th>Response Variable</th>
+                  <th></th>
+                </tr>
+                <tr>
+                  <td>trip_count</td>
+                  <td>the number of outbound trips from a given station for a given three-hour time period</td>
+                </tr>
+                <tr>
+                  <th>Predictor Variables</th>
+                  <th></th>
+                </tr>
+                <tr>
+                  <td>precipi</td>
+                  <td>average precipitation, in inches</td>
+                </tr>
+                <tr>
+                  <td>pressurei</td>
+                  <td>average air pressure, in psi</td>
+                </tr>
+                <tr>
+                  <td>hum</td>
+                  <td>average relative humidity</td>
+                </tr>
+                <tr>
+                  <td>tempi </td>
+                  <td>average temperature, in degrees Fahrenheit</td>
+                </tr>
+                <tr>
+                  <td>dewpti </td>
+                  <td>average dewpoint, in degrees Fahrenheit</td>
+                </tr>
+                <tr>
+                  <td>visi </td>
+                  <td>average visibility</td>
+                </tr>
+                <tr>
+                  <td>wspdi</td>
+                  <td>average windspeed, in mph</td>
+                </tr>
+                <tr>
+                  <td>station_id</td>
+                  <td>Divvy station ID</td>
+                </tr>
+                <tr>
+                  <td>latitude </td>
+                  <td>latitude of the station</td>
+                </tr>
+                <tr>
+                  <td>longitude</td>
+                  <td>longitude of the station</td>
+                </tr>
+                <tr>
+                  <td>hour_6*</td>
+                  <td>6-9am time period</td>
+                </tr>
+                <tr>
+                  <td>hour_9*</td>
+                  <td>9am-noon time period</td>
+                </tr>
+                <tr>
+                  <td>hour_12*</td>
+                  <td>noon-3pm time period</td>
+                </tr>
+                <tr>
+                  <td>hour_15*</td>
+                  <td>3-6pm time period</td>
+                </tr>
+                <tr>
+                  <td>day_x (0-6)*</td>
+                  <td>Monday - Sunday</td>
+                </tr>
+                <tr>
+                  <td>weekend_day*</td>
+                  <td>Saturday or Sunday</td>
+                </tr>
+                <tr>
+                  <td>holiday*</td>
+                  <td>U.S. Federal holiday</td>
+                </tr>
+                <tr>
+                  <td>month_x (1-12)*</td>
+                  <td>January - December</td>
+                </tr>
+                <tr>
+                  <td>days_since_first_date </td>
+                  <td>number of days since the first date in the dataset (to help the model account for increases in total ridership over time)</td>
+                </tr>
+              </table>            
+              <i>*dummy variable</i>
+
+            <br>
+            <img class="center-block" src="images/feature_importance.jpg" alt="Feature Importance" height="50%" width="50%">
+            <br>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONCLUSION -->
+      <div id="conclusion">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h1>Conclusion</h1><br>
+        <p>Our main conclusions were as follows:</p>
+        <ul>
+          <li>It is possible to predict rentals with reasonable accuracy with the information provided by Divvy, combined with weather and calendar data.</li>
+          <li>Weather is the most important factor that determines rentals, especially precipitation and air pressure (low air pressure is generally associated with cloudy, rainy, or snowy weather).</li>
+          <li>Station location, the day of week, time of day, and whether or not the day is a holiday also factor in, but to a lesser extent than weather.</li>
+          <li>High-demand summer months see the highest volatility in demand, which makes them the most difficult months in which to make accurate predictions.</li>
+        </ul>
+        <br>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- final report -->
+      <div id="report">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Final Report</h2><br>
+        <p>Click to view detailed report</p>
+        <a href="report.html"><button type="button" class="btn btn-primary" id="button">View Report</button></a>
+        <br>
+        <br>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+    <footer>
+    <div id="footer">
+      <div class="container footer-custom">
+      <p class="pull-right"><a href="#homePage">Back to top</a></p>
+      <p>&copy; Mark Giangreco, Chris Mark, Jon Rovira 2016</p>
+    </div>
+    </footer>
+  </body>
+</html>
